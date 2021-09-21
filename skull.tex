@@ -2,10 +2,10 @@
 
 \usepackage{forloop}
 \usepackage{ifthen}
-\usepackage{emoji}
 \usepackage{tikz}
 \usepackage{xcolor}
 \usepackage{calc}
+\graphicspath{{images/}}
 
 \newcommand{\deflen}[2]{%      
   \expandafter\newlength\csname #1\endcsname
@@ -26,27 +26,18 @@
 \deflen{hSpace}{0mm}
 \deflen{vSpace}{0mm}
 
-\deflen{pageMarginV}{(\paperheight - \cardH * 3 - \vSpace * 2) * \real{0.5}}
+\deflen{pageMarginV}{(\paperheight - \cardH * 4 - \vSpace * 3) * \real{0.5}}
 \deflen{pageMarginH}{(\paperwidth - \cardW * 3 - \hSpace * 2) * \real{0.5}}
 
-\deflen{emojiOffsetH}{(\cardH - \emojiH) * \real{0.5}}
-\deflen{emojiOffsetW}{(\cardW - \emojiW) * \real{0.5}}
+\deflen{emojiOffsetH}{\cardH * \real{0.5}}
+\deflen{emojiOffsetW}{\cardW * \real{0.5}}
 
-\deflen{cardMarginW}{2mm}
-\deflen{cardMarginH}{2mm}
+\deflen{cardMarginW}{4mm}
+\deflen{cardMarginH}{4mm}
 \deflen{borderThickness}{1mm}
 
 \newcounter{row}
 \newcounter{col}
-% \newcounter{shade}
-% \newcounter{shape}
-% \newcounter{num}
-% \newcounter{shapei}
-
-% \definecolor{rouge}{rgb}{1 0 0}
-% \definecolor{vert}{rgb}{0 0.5 0}
-% \definecolor{bleu}{rgb}{0 0 0.8}
-
 \definecolor{red}{rgb}{1 0 0}
 \definecolor{green}{rgb}{0 1 0}
 \definecolor{blue}{rgb}{0 0 1}
@@ -54,20 +45,20 @@
 \definecolor{magenta}{rgb}{0 1 0}
 \definecolor{yellow}{rgb}{1 1 0}
 
-% \newcommand{\setColors}{%
-%   \ifthenelse{\therow=0}{%
-%     \colorlet{currColor}{rouge}
-%   }{%
-%     \ifthenelse{\therow=1}{%
-%       \colorlet{currColor}{vert}
-%     }{%
-%       \colorlet{currColor}{bleu}
-%     }
-%   }
-% }
+\newcommand{\setColors}{%
+  \ifthenelse{\therow=0}{%
+    \colorlet{currColor}{rouge}
+  }{%
+    \ifthenelse{\therow=1}{%
+      \colorlet{currColor}{vert}
+    }{%
+      \colorlet{currColor}{bleu}
+    }
+  }
+}
 
 \newcommand{\setColours}{%
-  \ifthenelse{\thepage=0}{%
+  \ifthenelse{\value{page}=0}{%
     \ifthenelse{\thecol=0}{%
       \colorlet{currColour}{red}
     }{%
@@ -90,21 +81,6 @@
   }
 }
 
-% \newcommand{\drawCard}{%
-%   \draw[color=black, rounded corners=3mm] (0, 0) rectangle (\cardW, -\cardH);
-%   \begin{scope}[shift = {(
-%       \cardW/2 -\shapeW/2,
-%       -\cardH/2 -\shapeSpacing/2 +\thenum*\shapeH/2 +\thenum*\shapeSpacing/2
-%   )}]
-%     \forloop{shapei}{0}{\theshapei < \thenum}{%
-%       \begin{scope}[shift={(0, -\theshapei*\shapeH -\theshapei*\shapeSpacing)}]
-%         \filldraw[draw=currColor, fill=currFill, line width=\borderThickness]
-%       (0, 0) rectangle (\shapeW, -\shapeH);
-%       \end{scope}
-%     }
-%   \end{scope}
-% }
-
 \newcommand{\drawCard}{%
   \draw[color=black] (0,0) rectangle (\cardW, -\cardH);
 
@@ -113,9 +89,9 @@
   
   \node[inner sep=0pt] (emoji) at (\emojiOffsetW, -\emojiOffsetH) {%
     \ifthenelse{\therow < 3}{%
-      \includegraphics[width=\emojiW]{rosette.svg}
+      \includegraphics[width=\emojiW]{rosette.pdf}
     }{%
-      \includegraphics[width=\emojiW]{skull_crossbones.svg}
+      \includegraphics[width=\emojiW]{skull_crossbones.pdf}
     }
   };
 }
@@ -127,8 +103,8 @@
 \begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
   \forloop{col}{0}{\thecol < 3}{%
     \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
+      \setColours
       \forloop{row}{0}{\therow < 3}{%
-        \setColours
         \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
           \drawCard
         \end{scope}
@@ -156,23 +132,5 @@
   }
 \end{tikzpicture}
 \newpage
-
-% \forloop{shape}{0}{\theshape < 3}{%
-%   \forloop{num}{1}{\thenum < 4}{%
-%     \begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
-%       \forloop{row}{0}{\therow < 3}{%
-%         \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
-%           \forloop{shade}{0}{\theshade < 3}{%
-%             \setColors
-%             \begin{scope}[shift={(\theshade*\cardW +\theshade*\hSpace +\pageMarginH,0)}]
-%               \drawCard
-%             \end{scope}
-%           }
-%         \end{scope}
-%       }
-%     \end{tikzpicture}
-%     \newpage
-%   }
-% }
 
 \end{document}
