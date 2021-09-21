@@ -38,6 +38,7 @@
 
 \newcounter{row}
 \newcounter{col}
+\newcounter{set}
 \newcounter{colour}
 \newcounter{numColours}
 \setcounter{numColours}{6}
@@ -46,7 +47,7 @@
 \definecolor{green}{rgb}{0 1 0}
 \definecolor{blue}{rgb}{0 0 1}
 \definecolor{cyan}{rgb}{0 1 1}
-\definecolor{magenta}{rgb}{0 1 0}
+\definecolor{magenta}{rgb}{1 0 1}
 \definecolor{yellow}{rgb}{1 1 0}
 
 \newcommand{\setColors}{%
@@ -86,7 +87,7 @@
 % }
 
 \newcommand{\setColours}{%
-  \ifthenelse{\value{page}=0}{%
+  \ifthenelse{\theset=0}{%
     \ifthenelse{\thecol=0}{%
       \colorlet{currColour}{red}
     }{%
@@ -128,40 +129,24 @@
 
 \begin{document}
 
-\begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
-  \forloop{col}{0}{\thecol < 3}{%
-    \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
-      \setColours
-      \forloop{row}{0}{\therow < 3}{%
-        \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
-          \drawCard
-        \end{scope}
-      }
-      \begin{scope}[shift={(0, -3*\cardH -3*\vSpace -\pageMarginV)}]
-        \drawCard
-      \end{scope}
-    \end{scope}
-  }
-\end{tikzpicture}
-\clearpage
-\stepcounter{page}
-
-\begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
-  \forloop{col}{0}{\thecol < 3}{%
-    \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
-      \forloop{row}{0}{\therow < 3}{%
+\forloop{set}{0}{\theset < 2}{
+  \begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
+    \forloop{col}{0}{\thecol < 3}{%
+      \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
         \setColours
-        \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
+        \forloop{row}{0}{\therow < 3}{%
+          \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
+            \drawCard
+          \end{scope}
+        }
+        \begin{scope}[shift={(0, -3*\cardH -3*\vSpace -\pageMarginV)}]
           \drawCard
         \end{scope}
-      }
-      \begin{scope}[shift={(0, -3*\cardH -3*\vSpace -\pageMarginV)}]
-        \drawCard
       \end{scope}
-    \end{scope}
-  }
-\end{tikzpicture}
-\clearpage
+    }
+  \end{tikzpicture}
+  \clearpage
+}
 
 % \forloop{colour}{0}{\thecolour < 6}{%
 %   \setcounter{col}{\pgfmathmod{\value{colour}}{3}}
