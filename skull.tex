@@ -36,43 +36,14 @@
 \newcounter{set}
 \newcounter{row}
 \newcounter{col}
-\newcounter{colour}
+\newcounter{style}
 
 \definecolorset{rgb}{couleur}{}{0,0,0,0;1,230,25,75;2,60,180,75;3,255,225,25;4,0,130,200;5,245,130,48;6,70,240,240;7,240,50,230;8,250,190,212;9,0,128,128;10,220,190,255;11,170,110,40;12,255,250,200;13,128,0,0;14,170,255,195;15,0,0,128;16,128,128,128;17,255,255,255}
-
-\newcommand{\setColours}{
-  \setcounter{colour}{3*\theset+\thecol}
-  \colorlet{currColour}{couleur\thecolour}
-}
-
-% \newcommand{\setColours}{%
-%   \ifthenelse{\theset=0}{%
-%     \ifthenelse{\thecol=0}{%
-%       \colorlet{currColour}{red}
-%     }{%
-%       \ifthenelse{\thecol=1}{%
-%         \colorlet{currColour}{green}
-%       }{%
-%         \colorlet{currColour}{yellow}
-%       }
-%     }
-%   }{%
-%     \ifthenelse{\thecol=0}{%
-%       \colorlet{currColour}{blue}
-%     }{%
-%       \ifthenelse{\thecol=1}{%
-%         \colorlet{currColour}{orange}
-%       }{%
-%         \colorlet{currColour}{cyan}
-%       }
-%     }
-%   }
-% }
 
 \newcommand{\drawCard}{%
   \draw[color=black] (0,0) rectangle (\cardW, -\cardH);
 
-  \draw[color=currColour, line width=\borderThickness]
+  \draw[color=couleur\thestyle, line width=\borderThickness]
   (\cardMarginW,-\cardMarginH) rectangle (\cardW-\cardMarginW,\cardMarginH-\cardH);
   
   \node[inner sep=0pt] (emoji) at (\emojiOffsetW, -\emojiOffsetH) {%
@@ -93,7 +64,8 @@
   \begin{tikzpicture}[overlay, shift=(current page.north west)]
     \forloop{col}{0}{\thecol < 3}{%
       \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
-        \setColours
+        \setcounter{style}{3*\theset+\thecol}
+        
         \forloop{row}{0}{\therow < 3}{%
           \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
             \drawCard
