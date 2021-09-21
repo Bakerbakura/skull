@@ -15,10 +15,6 @@
 \deflen{cardW}{64mm}
 \deflen{cardH}{64mm}
 
-% \deflen{shapeW}{38.4mm}
-% \deflen{shapeH}{17.8mm}
-% \deflen{shapeSpacing}{7.0mm}
-
 % assuming that emoji are square
 \deflen{emojiW}{30mm}
 \deflen{emojiH}{30mm}
@@ -39,9 +35,6 @@
 \newcounter{row}
 \newcounter{col}
 \newcounter{set}
-\newcounter{colour}
-\newcounter{numColours}
-\setcounter{numColours}{6}
 
 \definecolor{red}{rgb}{1 0 0}
 \definecolor{green}{rgb}{0 1 0}
@@ -49,42 +42,6 @@
 \definecolor{cyan}{rgb}{0 1 1}
 \definecolor{magenta}{rgb}{1 0 1}
 \definecolor{yellow}{rgb}{1 1 0}
-
-\newcommand{\setColors}{%
-  \ifthenelse{\therow=0}{%
-    \colorlet{currColor}{rouge}
-  }{%
-    \ifthenelse{\therow=1}{%
-      \colorlet{currColor}{vert}
-    }{%
-      \colorlet{currColor}{bleu}
-    }
-  }
-}
-
-% \newcommand{\setColours}{%
-%   \ifthenelse{\thecolour=0}{%
-%     \colorlet{currColour}{red}
-%   }{%
-%     \ifthenelse{\thecolour=1}{%
-%       \colorlet{currColour}{green}
-%     }{%
-%       \ifthenelse{\thecolour=2}{
-%         \colorlet{currColour}{blue}
-%       }{
-%         \ifthenelse{\thecolour=3}{
-%           \colorlet{currColour}{cyan}
-%         }{
-%           \ifthenelse{\thecolour=4}{
-%             \colorlet{currColour}{magenta}
-%           }{
-%             \colorlet{currColour}{yellow}
-%           }
-%         }
-%       }
-%     }
-%   }
-% }
 
 \newcommand{\setColours}{%
   \ifthenelse{\theset=0}{%
@@ -127,6 +84,7 @@
 
 \pagenumbering{gobble}
 
+
 \begin{document}
 
 \forloop{set}{0}{\theset < 2}{
@@ -147,29 +105,5 @@
   \end{tikzpicture}
   \clearpage
 }
-
-% \forloop{colour}{0}{\thecolour < 6}{%
-%   \setcounter{col}{\pgfmathmod{\value{colour}}{3}}
-%   \ifthenelse{\thecol = 0}{
-%     \begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
-%   }{}
-  
-%   \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
-%     \forloop{row}{0}{\therow < 3}{%
-%       \setColours
-%       \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
-%         \drawCard
-%       \end{scope}
-%     }
-%     \begin{scope}[shift={(0, -3*\cardH -3*\vSpace -\pageMarginV)}]
-%       \drawCard
-%     \end{scope}
-%   \end{scope}
-
-%   \ifthenelse{\thecol = 2}{
-%     \end{tikzpicture}
-%     \newpage
-%   }{}
-% }
 
 \end{document}
