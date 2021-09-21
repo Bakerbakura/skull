@@ -6,6 +6,7 @@
 \usepackage{xcolor}
 \usepackage{calc}
 \graphicspath{{images/}}
+\tikzset{every picture/.append style={remember picture}}
 
 \newcommand{\deflen}[2]{%      
   \expandafter\newlength\csname #1\endcsname
@@ -30,42 +31,43 @@
 
 \deflen{cardMarginW}{4mm}
 \deflen{cardMarginH}{4mm}
-\deflen{borderThickness}{1mm}
+\deflen{borderThickness}{2mm}
 
+\newcounter{set}
 \newcounter{row}
 \newcounter{col}
-\newcounter{set}
+\newcounter{colour}
 
-\definecolor{red}{rgb}{1 0 0}
-\definecolor{green}{rgb}{0 1 0}
-\definecolor{blue}{rgb}{0 0 1}
-\definecolor{cyan}{rgb}{0 1 1}
-\definecolor{magenta}{rgb}{1 0 1}
-\definecolor{yellow}{rgb}{1 1 0}
+\definecolorset{rgb}{couleur}{}{0,0,0,0;1,230,25,75;2,60,180,75;3,255,225,25;4,0,130,200;5,245,130,48;6,70,240,240;7,240,50,230;8,250,190,212;9,0,128,128;10,220,190,255;11,170,110,40;12,255,250,200;13,128,0,0;14,170,255,195;15,0,0,128;16,128,128,128;17,255,255,255}
 
-\newcommand{\setColours}{%
-  \ifthenelse{\theset=0}{%
-    \ifthenelse{\thecol=0}{%
-      \colorlet{currColour}{red}
-    }{%
-      \ifthenelse{\thecol=1}{%
-        \colorlet{currColour}{green}
-      }{%
-        \colorlet{currColour}{blue}
-      }
-    }
-  }{%
-    \ifthenelse{\thecol=0}{%
-      \colorlet{currColour}{cyan}
-    }{%
-      \ifthenelse{\thecol=1}{%
-        \colorlet{currColour}{magenta}
-      }{%
-        \colorlet{currColour}{yellow}
-      }
-    }
-  }
+\newcommand{\setColours}{
+  \setcounter{colour}{3*\theset+\thecol}
+  \colorlet{currColour}{couleur\thecolour}
 }
+
+% \newcommand{\setColours}{%
+%   \ifthenelse{\theset=0}{%
+%     \ifthenelse{\thecol=0}{%
+%       \colorlet{currColour}{red}
+%     }{%
+%       \ifthenelse{\thecol=1}{%
+%         \colorlet{currColour}{green}
+%       }{%
+%         \colorlet{currColour}{yellow}
+%       }
+%     }
+%   }{%
+%     \ifthenelse{\thecol=0}{%
+%       \colorlet{currColour}{blue}
+%     }{%
+%       \ifthenelse{\thecol=1}{%
+%         \colorlet{currColour}{orange}
+%       }{%
+%         \colorlet{currColour}{cyan}
+%       }
+%     }
+%   }
+% }
 
 \newcommand{\drawCard}{%
   \draw[color=black] (0,0) rectangle (\cardW, -\cardH);
@@ -88,7 +90,7 @@
 \begin{document}
 
 \forloop{set}{0}{\theset < 2}{
-  \begin{tikzpicture}[remember picture, overlay, shift=(current page.north west)]
+  \begin{tikzpicture}[overlay, shift=(current page.north west)]
     \forloop{col}{0}{\thecol < 3}{%
       \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
         \setColours
