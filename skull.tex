@@ -9,17 +9,17 @@
 \graphicspath{{images/}}
 \tikzset{every picture/.append style={remember picture}}
 
-\newcommand{\deflen}[2]{%      
+\newcommand{\deflen}[2]{%
   \expandafter\newlength\csname #1\endcsname
   \expandafter\setlength\csname #1\endcsname{#2}%
 }
 
 % number of columns per page and number of pages
-% total number of players is numCols*numPages
-\newcounter{numCols}
-\setcounter{numCols}{4}
-\newcounter{numPages}
-\setcounter{numPages}{2}
+% total number of players is nCols*nPages
+\newcounter{nCols}
+\setcounter{nCols}{4}
+\newcounter{nPages}
+\setcounter{nPages}{2}
 
 % radius of cards
 \deflen{cardR}{32mm}
@@ -29,8 +29,8 @@
 \deflen{picH}{35mm}
 
 % space between cards
-\deflen{hSpace}{3mm}
-\deflen{vSpace}{6mm}
+\deflen{hGap}{4mm}
+\deflen{vGap}{6mm}
 
 % design of coloured borders of cards
 \deflen{borderR}{28mm}
@@ -42,10 +42,8 @@
 
 % --- END OF CONFIGURATION --- %
 
-\deflen{pageMarginV}{(\paperheight - \cardR*10 - \vSpace*4) * \real{0.5}}
-\deflen{pageMarginH}{
-  (\paperwidth - \cardR*\thenumCols*2 - \hSpace*\thenumCols +\hSpace) * \real{0.5}
-}
+\deflen{pageMarginV}{\paperheight/2 - \cardR*5 - \vGap*2}
+\deflen{pageMarginH}{(\paperwidth - (\cardR*2+\hGap) * \thenCols + \hGap) / 2}
 
 \newcounter{set}
 \newcounter{row}
@@ -76,14 +74,14 @@
 
 \begin{document}
 
-\forloop{set}{0}{\theset < \thenumPages}{
-  \begin{tikzpicture}[overlay, shift=(current page.north west)]
-    \forloop{col}{0}{\thecol < \thenumCols}{%
-      \setcounter{style}{\theset*\thenumCols +\thecol}
-      \forloop{row}{0}{\therow < 5}{
+\forloop{set}{0}{\theset < \thenPages}{%
+  \begin{tikzpicture}[overlay, shift=(current page.south west)]
+    \forloop{col}{0}{\thecol < \thenCols}{%
+      \setcounter{style}{\theset*\thenCols +\thecol}
+      \forloop{row}{0}{\therow < 5}{%
         \begin{scope}[shift={(
-          \thecol*2*\cardR + \cardR + \thecol*\hSpace + \pageMarginH,
-          -\therow*2*\cardR - \cardR - \therow*\vSpace - \pageMarginV
+          \thecol*2*\cardR + \cardR + \thecol*\hGap + \pageMarginH,
+          \therow*2*\cardR + \cardR + \therow*\vGap + \pageMarginV
         )}]
           \drawCard
         \end{scope}
