@@ -14,28 +14,27 @@
   \expandafter\setlength\csname #1\endcsname{#2}%
 }
 
-% number of players to print for (numCols*numSets)
+% number of columns per page and number of pages
+% total number of players is numCols*numPages
 \newcounter{numCols}
 \setcounter{numCols}{4}
-\newcounter{numSets}
-\setcounter{numSets}{2}
+\newcounter{numPages}
+\setcounter{numPages}{2}
 
-% width and height of cards
-\deflen{cardW}{64mm}
-\deflen{cardH}{64mm}
+% radius of cards
+\deflen{cardR}{32mm}
 
 % assuming that pics are square
-\deflen{picW}{30mm}
-\deflen{picH}{30mm}
+\deflen{picW}{35mm}
+\deflen{picH}{35mm}
 
 % space between cards
-\deflen{hSpace}{0mm}
-\deflen{vSpace}{0mm}
+\deflen{hSpace}{3mm}
+\deflen{vSpace}{6mm}
 
 % design of coloured borders of cards
-\deflen{cardMarginW}{4mm}
-\deflen{cardMarginH}{4mm}
-\deflen{borderThickness}{2mm}
+\deflen{borderR}{28mm}
+\deflen{borderWidth}{2mm}
 
 % colours for each player
 \definecolorset{rgb}{couleur}{}{0,0.000,0.000,0.000;1,0.902,0.098,0.294;2,0.235,0.706,0.294;3,1.000,0.882,0.098;4,0.000,0.510,0.784;5,0.961,0.510,0.188;6,0.275,0.941,0.941;7,0.941,0.196,0.902;8,0.980,0.745,0.831;9,0.000,0.502,0.502;10,0.863,0.745,1.000;11,0.667,0.431,0.157;12,1.000,0.980,0.784;13,0.502,0.000,0.000;14,0.667,1.000,0.765;15,0.000,0.000,0.502;16,0.502,0.502,0.502;17,1.000,1.000,1.000}
@@ -43,13 +42,10 @@
 
 % --- END OF CONFIGURATION --- %
 
-\deflen{pageMarginV}{(\paperheight - \cardH*5 - \vSpace*4) * \real{0.5}}
+\deflen{pageMarginV}{(\paperheight - \cardR*10 - \vSpace*4) * \real{0.5}}
 \deflen{pageMarginH}{
-  (\paperwidth - \cardW*\thenumCols - \hSpace*\thenumCols +\hSpace) * \real{0.5}
+  (\paperwidth - \cardR*\thenumCols*2 - \hSpace*\thenumCols +\hSpace) * \real{0.5}
 }
-
-\deflen{picOffsetH}{\cardH * \real{0.5}}
-\deflen{picOffsetW}{\cardW * \real{0.5}}
 
 \newcounter{set}
 \newcounter{row}
@@ -57,20 +53,22 @@
 \newcounter{style}
 
 \newcommand{\drawCard}{%
-  \draw[color=black] (0,0) rectangle (\cardW, -\cardH);
-
-  \draw[color=couleur\thestyle, line width=\borderThickness]
-  (\cardMarginW,-\cardMarginH) rectangle (\cardW-\cardMarginW,\cardMarginH-\cardH);
-  
-  \node[inner sep=0pt] (pic) at (\picOffsetW, -\picOffsetH) {%
-    \ifthenelse{\therow < 3}{%
-      \includegraphics[width=\picW]{rosette.pdf}
-    }{%
-      \ifthenelse{\therow = 3}{
-        \includegraphics[width=\picW]{skull_crossbones.pdf}
-      }{}
-    }
-  };
+  \ifthenelse{\therow < 4}{% skulls and flowers
+    \draw[color=black] (0,0) circle [radius=\cardR];
+    \draw[color=couleur\thestyle, line width=\borderWidth]
+      (0,0) circle [radius=\borderR];
+    \node[inner sep=0pt] (pic) at (0, 0) {%
+      \ifthenelse{\therow < 3}{% flowers
+        \includegraphics[width=\picW, height=\picH]{rosette.pdf}
+      }{% skull
+        \includegraphics[width=\picW, height=\picH]{skull_crossbones.pdf}
+      }
+    };
+  }{% base card
+    \draw[color=black] (-\cardR, -\cardR) rectangle (\cardR, \cardR);
+    \draw[color=couleur\thestyle, line width=\borderWidth]
+      (-\borderR, -\borderR) rectangle (\borderR, \borderR);
+  }
 }
 
 \pagenumbering{gobble}
@@ -78,18 +76,18 @@
 
 \begin{document}
 
-\forloop{set}{0}{\theset < \thenumSets}{
+\forloop{set}{0}{\theset < \thenumPages}{
   \begin{tikzpicture}[overlay, shift=(current page.north west)]
     \forloop{col}{0}{\thecol < \thenumCols}{%
-      \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
-        \setcounter{style}{\thenumCols*\theset+\thecol}
-        
-        \forloop{row}{0}{\therow < 5}{%
-          \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
-            \drawCard
-          \end{scope}
-        }
-      \end{scope}
+      \setcounter{style}{\theset*\thenumCols +\thecol}
+      \forloop{row}{0}{\therow < 5}{
+        \begin{scope}[shift={(
+          \thecol*2*\cardR + \cardR + \thecol*\hSpace + \pageMarginH,
+          -\therow*2*\cardR - \cardR - \therow*\vSpace - \pageMarginV
+        )}]
+          \drawCard
+        \end{scope}
+      }
     }
   \end{tikzpicture}
   \clearpage
