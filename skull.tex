@@ -25,7 +25,7 @@
 % radius of cards
 \deflen{cardR}{32mm}
 
-% assuming that pics are square
+% maximum width and height for pics
 \deflen{picW}{35mm}
 \deflen{picH}{35mm}
 
@@ -36,6 +36,7 @@
 % design of coloured borders of cards
 \deflen{borderR}{28mm}
 \deflen{borderWidth}{2mm}
+\deflen{cornerR}{3mm}
 
 % colours for each player
 \definecolorset{rgb}{couleur}{}{0,0.000,0.000,0.000;1,0.902,0.098,0.294;2,0.235,0.706,0.294;3,1.000,0.882,0.098;4,0.000,0.510,0.784;5,0.961,0.510,0.188;6,0.275,0.941,0.941;7,0.941,0.196,0.902;8,0.980,0.745,0.831;9,0.000,0.502,0.502;10,0.863,0.745,1.000;11,0.667,0.431,0.157;12,1.000,0.980,0.784;13,0.502,0.000,0.000;14,0.667,1.000,0.765;15,0.000,0.000,0.502;16,0.502,0.502,0.502;17,1.000,1.000,1.000}
@@ -64,8 +65,9 @@
       }
     };
   }{% base card
-    \draw[color=black] (-\cardR, -\cardR) rectangle (\cardR, \cardR);
-    \draw[color=couleur\thestyle, line width=\borderWidth]
+    \draw[color=black, rounded corners=\cornerR+\cardR-\borderR]
+      (-\cardR, -\cardR) rectangle (\cardR, \cardR);
+    \draw[color=couleur\thestyle, line width=\borderWidth, rounded corners=\cornerR]
       (-\borderR, -\borderR) rectangle (\borderR, \borderR);
   }
 }
