@@ -1,6 +1,7 @@
 \documentclass{article}
 
 \usepackage[a3paper]{geometry}
+\usepackage{printlen}
 \usepackage{forloop}
 \usepackage{ifthen}
 \usepackage{tikz}
@@ -29,8 +30,8 @@
 \deflen{picH}{35mm}
 
 % space between cards
-\deflen{hGap}{4mm}
-\deflen{vGap}{6mm}
+\deflen{hGap}{7mm}
+\deflen{vGap}{7mm}
 
 % design of coloured borders of cards
 \deflen{borderR}{28mm}
@@ -90,5 +91,11 @@
   \end{tikzpicture}
   \clearpage
 }
+
+% \uselengthunit{mm}
+
+% Length of \texttt{pageMarginV} is \printlength{\pageMarginV}.
+
+% Length of \texttt{pageMarginH} is \printlength{\pageMarginH}.
 
 \end{document}
