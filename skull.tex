@@ -1,5 +1,6 @@
-\documentclass[a4paper]{article}
+\documentclass{article}
 
+\usepackage[a3paper]{geometry}
 \usepackage{forloop}
 \usepackage{ifthen}
 \usepackage{tikz}
@@ -13,32 +14,47 @@
   \expandafter\setlength\csname #1\endcsname{#2}%
 }
 
+% number of players to print for (numCols*numSets)
+\newcounter{numCols}
+\setcounter{numCols}{4}
+\newcounter{numSets}
+\setcounter{numSets}{2}
+
+% width and height of cards
 \deflen{cardW}{64mm}
 \deflen{cardH}{64mm}
 
-% assuming that emoji are square
-\deflen{emojiW}{30mm}
-\deflen{emojiH}{30mm}
+% assuming that pics are square
+\deflen{picW}{30mm}
+\deflen{picH}{30mm}
 
+% space between cards
 \deflen{hSpace}{0mm}
 \deflen{vSpace}{0mm}
 
-\deflen{pageMarginV}{(\paperheight - \cardH * 4 - \vSpace * 3) * \real{0.5}}
-\deflen{pageMarginH}{(\paperwidth - \cardW * 3 - \hSpace * 2) * \real{0.5}}
-
-\deflen{emojiOffsetH}{\cardH * \real{0.5}}
-\deflen{emojiOffsetW}{\cardW * \real{0.5}}
-
+% design of coloured borders of cards
 \deflen{cardMarginW}{4mm}
 \deflen{cardMarginH}{4mm}
 \deflen{borderThickness}{2mm}
+
+% colours for each player
+\definecolorset{rgb}{couleur}{}{0,0.000,0.000,0.000;1,0.902,0.098,0.294;2,0.235,0.706,0.294;3,1.000,0.882,0.098;4,0.000,0.510,0.784;5,0.961,0.510,0.188;6,0.275,0.941,0.941;7,0.941,0.196,0.902;8,0.980,0.745,0.831;9,0.000,0.502,0.502;10,0.863,0.745,1.000;11,0.667,0.431,0.157;12,1.000,0.980,0.784;13,0.502,0.000,0.000;14,0.667,1.000,0.765;15,0.000,0.000,0.502;16,0.502,0.502,0.502;17,1.000,1.000,1.000}
+
+
+% --- END OF CONFIGURATION --- %
+
+\deflen{pageMarginV}{(\paperheight - \cardH*5 - \vSpace*4) * \real{0.5}}
+\deflen{pageMarginH}{
+  (\paperwidth - \cardW*\thenumCols - \hSpace*\thenumCols +\hSpace) * \real{0.5}
+}
+
+\deflen{picOffsetH}{\cardH * \real{0.5}}
+\deflen{picOffsetW}{\cardW * \real{0.5}}
 
 \newcounter{set}
 \newcounter{row}
 \newcounter{col}
 \newcounter{style}
-
-\definecolorset{rgb}{couleur}{}{0,0.000,0.000,0.000;1,0.902,0.098,0.294;2,0.235,0.706,0.294;3,1.000,0.882,0.098;4,0.000,0.510,0.784;5,0.961,0.510,0.188;6,0.275,0.941,0.941;7,0.941,0.196,0.902;8,0.980,0.745,0.831;9,0.000,0.502,0.502;10,0.863,0.745,1.000;11,0.667,0.431,0.157;12,1.000,0.980,0.784;13,0.502,0.000,0.000;14,0.667,1.000,0.765;15,0.000,0.000,0.502;16,0.502,0.502,0.502;17,1.000,1.000,1.000}
 
 \newcommand{\drawCard}{%
   \draw[color=black] (0,0) rectangle (\cardW, -\cardH);
@@ -46,11 +62,13 @@
   \draw[color=couleur\thestyle, line width=\borderThickness]
   (\cardMarginW,-\cardMarginH) rectangle (\cardW-\cardMarginW,\cardMarginH-\cardH);
   
-  \node[inner sep=0pt] (emoji) at (\emojiOffsetW, -\emojiOffsetH) {%
+  \node[inner sep=0pt] (pic) at (\picOffsetW, -\picOffsetH) {%
     \ifthenelse{\therow < 3}{%
-      \includegraphics[width=\emojiW]{rosette.pdf}
+      \includegraphics[width=\picW]{rosette.pdf}
     }{%
-      \includegraphics[width=\emojiW]{skull_crossbones.pdf}
+      \ifthenelse{\therow = 3}{
+        \includegraphics[width=\picW]{skull_crossbones.pdf}
+      }{}
     }
   };
 }
@@ -60,20 +78,17 @@
 
 \begin{document}
 
-\forloop{set}{0}{\theset < 2}{
+\forloop{set}{0}{\theset < \thenumSets}{
   \begin{tikzpicture}[overlay, shift=(current page.north west)]
-    \forloop{col}{0}{\thecol < 3}{%
+    \forloop{col}{0}{\thecol < \thenumCols}{%
       \begin{scope}[shift={(\thecol*\cardW +\thecol*\hSpace +\pageMarginH, 0)}]
-        \setcounter{style}{3*\theset+\thecol}
+        \setcounter{style}{\thenumCols*\theset+\thecol}
         
-        \forloop{row}{0}{\therow < 3}{%
+        \forloop{row}{0}{\therow < 5}{%
           \begin{scope}[shift={(0, -\therow*\cardH -\therow*\vSpace -\pageMarginV)}]
             \drawCard
           \end{scope}
         }
-        \begin{scope}[shift={(0, -3*\cardH -3*\vSpace -\pageMarginV)}]
-          \drawCard
-        \end{scope}
       \end{scope}
     }
   \end{tikzpicture}
