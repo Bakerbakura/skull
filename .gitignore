@@ -1,1 +1,6 @@
-/.vscode
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+
+.vscode/
