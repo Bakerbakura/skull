@@ -20,7 +20,7 @@
 \newcounter{nCols}
 \setcounter{nCols}{4}
 \newcounter{nPages}
-\setcounter{nPages}{4}
+\setcounter{nPages}{2}
 
 % radius of cards
 \deflen{cardR}{32mm}
@@ -69,11 +69,34 @@
 \newcounter{col}
 \newcounter{style}
 
+% round skulls and flowers
+% \newcommand{\drawCard}{%
+%   \ifthenelse{\therow < 4}{% skulls and flowers
+%     \draw[color=black] (0,0) circle [radius=\cardR];
+%     \draw[color=couleur\thestyle, line width=\borderWidth]
+%       (0,0) circle [radius=\borderR];
+%     \node[inner sep=0pt] (pic) at (0, 0) {%
+%       \ifthenelse{\therow < 3}{% flowers
+%         \includegraphics[width=\picW, height=\picH]{rosette.pdf}
+%       }{% skull
+%         \includegraphics[width=\picW, height=\picH]{skull_crossbones.pdf}
+%       }
+%     };
+%   }{% base card
+%     \draw[color=black, rounded corners=\cornerR+\cardR-\borderR]
+%       (-\cardR, -\cardR) rectangle (\cardR, \cardR);
+%     \draw[color=couleur\thestyle, line width=\borderWidth, rounded corners=\cornerR]
+%       (-\borderR, -\borderR) rectangle (\borderR, \borderR);
+%   }
+% }
+
+% square skulls and flowers
 \newcommand{\drawCard}{%
+  \draw[color=black, rounded corners=\cornerR+\cardR-\borderR]
+    (-\cardR, -\cardR) rectangle (\cardR, \cardR);
+  \draw[color=couleur\thestyle, line width=\borderWidth, rounded corners=\cornerR]
+    (-\borderR, -\borderR) rectangle (\borderR, \borderR);
   \ifthenelse{\therow < 4}{% skulls and flowers
-    \draw[color=black] (0,0) circle [radius=\cardR];
-    \draw[color=couleur\thestyle, line width=\borderWidth]
-      (0,0) circle [radius=\borderR];
     \node[inner sep=0pt] (pic) at (0, 0) {%
       \ifthenelse{\therow < 3}{% flowers
         \includegraphics[width=\picW, height=\picH]{rosette.pdf}
@@ -81,12 +104,7 @@
         \includegraphics[width=\picW, height=\picH]{skull_crossbones.pdf}
       }
     };
-  }{% base card
-    \draw[color=black, rounded corners=\cornerR+\cardR-\borderR]
-      (-\cardR, -\cardR) rectangle (\cardR, \cardR);
-    \draw[color=couleur\thestyle, line width=\borderWidth, rounded corners=\cornerR]
-      (-\borderR, -\borderR) rectangle (\borderR, \borderR);
-  }
+  }{}
 }
 
 \pagenumbering{gobble}
